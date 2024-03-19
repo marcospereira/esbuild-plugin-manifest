@@ -32,10 +32,10 @@ class Mapping {
 }
 
 interface ManifestEntry {
-  file: string,
-  source: string,
-  integrity: string,
-  etag: string,
+  file: string;
+  source: string;
+  integrity: string;
+  etag: string;
 }
 
 interface ManifestEntries {
