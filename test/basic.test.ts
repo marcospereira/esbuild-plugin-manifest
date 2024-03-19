@@ -945,6 +945,45 @@ test('it should keep the file when filter function returns true', async () => {
   });
 });
 
+test('it should remove the outdir folder prefix when configured to have relative paths (both)', async () => {
+  await require('esbuild').build(buildOptions({relative: true}));
+
+  expect(metafileContents()).toEqual({
+    "/example.js": {
+      "etag": "b10922b033167718e2b3031052833770",
+      "file": "/example-TM2TU5PS.js",
+      "integrity": "g9fnNEI81bgIE1qEBZAG4T/fEcHlNyHJoBu3XUvKAG3nOeMU8rJ61B/3PV+Vc48I",
+      "source": "test/output/example.js",
+    }
+  });
+});
+
+test('it should remove the outdir folder prefix when configured to have relative paths (input)', async () => {
+  await require('esbuild').build(buildOptions({relative: 'input'}));
+
+  expect(metafileContents()).toEqual({
+    "/example.js": {
+      "etag": "b10922b033167718e2b3031052833770",
+      "file": "test/output/example-TM2TU5PS.js",
+      "integrity": "g9fnNEI81bgIE1qEBZAG4T/fEcHlNyHJoBu3XUvKAG3nOeMU8rJ61B/3PV+Vc48I",
+      "source": "test/output/example.js",
+    }
+  });
+});
+
+test('it should remove the outdir folder prefix when configured to have relative paths (output)', async () => {
+  await require('esbuild').build(buildOptions({relative: 'output'}));
+
+  expect(metafileContents()).toEqual({
+    "test/output/example.js": {
+      "etag": "b10922b033167718e2b3031052833770",
+      "file": "/example-TM2TU5PS.js",
+      "integrity": "g9fnNEI81bgIE1qEBZAG4T/fEcHlNyHJoBu3XUvKAG3nOeMU8rJ61B/3PV+Vc48I",
+      "source": "test/output/example.js",
+    }
+  });
+});
+
 test('it should remove the file when filter function returns false', async () => {
   await require('esbuild').build(buildOptions({filter: (filename: string) => filename.match(/notFound/), hash: false}));
 
