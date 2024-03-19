@@ -51,6 +51,7 @@ interface ManifestPluginOptions {
   append?: boolean;
   generate?: (entries: ManifestEntries) => Object;
   filter?: (filename: string) => boolean;
+  relative?: OptionValue;
 }
 
 export = (options: ManifestPluginOptions = {}): Plugin => ({
@@ -85,6 +86,10 @@ export = (options: ManifestPluginOptions = {}): Plugin => ({
         // check if the extensionless option is being used on the input or output
         input = shouldModify('input', options.extensionless) ? extensionless(input) : input;
         output = shouldModify('output', options.extensionless) ? extensionless(output) : output;
+
+        // check if the relative option is being used
+        input = shouldModify('input', options.relative) ? relativeName(input, build.initialOptions.outdir) : input;
+        output = shouldModify('output', options.relative) ? relativeName(output, build.initialOptions.outdir) : output;
 
         // When shortNames are enabled, there can be conflicting filenames.
         // For example, if the entry points are ['src/pages/home/index.js', 'src/pages/about/index.js'] both of the
@@ -227,6 +232,10 @@ const shouldModify = (inputOrOutput: 'input' | 'output', optionValue?: OptionVal
 
 const shortName = (value: string): string => {
   return path.basename(value);
+};
+
+const relativeName = (filename: string, outputFolder: string | undefined): string => {
+  return filename.replace(outputFolder || '', '');
 };
 
 const extensionless = (value: string): string => {
