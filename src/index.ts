@@ -14,12 +14,7 @@ class Mapping {
   inputOriginal: string;
   outputOriginal: string;
 
-  constructor(
-    input: string,
-    output: string,
-    inputOriginal: string,
-    outputOriginal: string,
-  ) {
+  constructor(input: string, output: string, inputOriginal: string, outputOriginal: string) {
     this.input = input;
     this.output = output;
     this.inputOriginal = inputOriginal;
@@ -63,12 +58,9 @@ export = (options: ManifestPluginOptions = {}): Plugin => ({
 
     // assume that the user wants to hash their files by default,
     // but don't override any hashing format they may have already set.
-    const defaultHashNames =
-      options.hash === false ? "[dir]/[name]" : "[dir]/[name]-[hash]";
-    build.initialOptions.entryNames =
-      build.initialOptions.entryNames || defaultHashNames;
-    build.initialOptions.assetNames =
-      build.initialOptions.assetNames || defaultHashNames;
+    const defaultHashNames = options.hash === false ? "[dir]/[name]" : "[dir]/[name]-[hash]";
+    build.initialOptions.entryNames = build.initialOptions.entryNames || defaultHashNames;
+    build.initialOptions.assetNames = build.initialOptions.assetNames || defaultHashNames;
 
     build.onEnd((result: BuildResult) => {
       // Only proceed if the build result does not have any errors.
@@ -85,28 +77,16 @@ export = (options: ManifestPluginOptions = {}): Plugin => ({
 
       const addMapping = (inputFilename: string, outputFilename: string) => {
         // check if the shortNames option is being used on the input or output
-        let input = shouldModify("input", options.shortNames)
-          ? shortName(inputFilename)
-          : inputFilename;
-        let output = shouldModify("output", options.shortNames)
-          ? shortName(outputFilename)
-          : outputFilename;
+        let input = shouldModify("input", options.shortNames) ? shortName(inputFilename) : inputFilename;
+        let output = shouldModify("output", options.shortNames) ? shortName(outputFilename) : outputFilename;
 
         // check if the extensionless option is being used on the input or output
-        input = shouldModify("input", options.extensionless)
-          ? extensionless(input)
-          : input;
-        output = shouldModify("output", options.extensionless)
-          ? extensionless(output)
-          : output;
+        input = shouldModify("input", options.extensionless) ? extensionless(input) : input;
+        output = shouldModify("output", options.extensionless) ? extensionless(output) : output;
 
         // check if the relative option is being used
-        input = shouldModify("input", options.relative)
-          ? relativeName(input, build.initialOptions.outdir)
-          : input;
-        output = shouldModify("output", options.relative)
-          ? relativeName(output, build.initialOptions.outdir)
-          : output;
+        input = shouldModify("input", options.relative) ? relativeName(input, build.initialOptions.outdir) : input;
+        output = shouldModify("output", options.relative) ? relativeName(output, build.initialOptions.outdir) : output;
 
         // When shortNames are enabled, there can be conflicting filenames.
         // For example, if the entry points are ['src/pages/home/index.js', 'src/pages/about/index.js'] both of the
@@ -120,10 +100,7 @@ export = (options: ManifestPluginOptions = {}): Plugin => ({
           );
         }
 
-        mappings.set(
-          input,
-          new Mapping(input, output, inputFilename, outputFilename),
-        );
+        mappings.set(input, new Mapping(input, output, inputFilename, outputFilename));
       };
 
       for (const outputFilename in result.metafile.outputs) {
@@ -138,16 +115,12 @@ export = (options: ManifestPluginOptions = {}): Plugin => ({
         }
 
         // Are we processing the entrypoint file itself or a sibling/imported file?
-        const isEntryFile =
-          result.metafile.outputs[outputFilename]!.entryPoint !== undefined;
+        const isEntryFile = result.metafile.outputs[outputFilename]!.entryPoint !== undefined;
 
         // If the user specified the useEntryExtension option, we'll use the entrypoint filename as the key.
         if (options.useEntrypointKeys && isEntryFile) {
           // Cannot use the useEntrypointKeys option when the extensionless option is also being used
-          if (
-            options.extensionless === true ||
-            options.extensionless === "input"
-          ) {
+          if (options.extensionless === true || options.extensionless === "input") {
             throw new Error(
               "The useEntrypointKeys option cannot be used when the extensionless option is also being used.",
             );
@@ -167,21 +140,15 @@ export = (options: ManifestPluginOptions = {}): Plugin => ({
         try {
           existingManifest = JSON.parse(fs.readFileSync(fullPath, "utf8"));
         } catch (e) {
-          console.info(
-            "No existing manifest file found. A new one will be created.",
-          );
+          console.info("No existing manifest file found. A new one will be created.");
         }
       }
 
       const entries = fromEntries(mappings, existingManifest);
 
-      const filteredEntries = options.filter
-        ? filterEntries(entries, options.filter)
-        : entries;
+      const filteredEntries = options.filter ? filterEntries(entries, options.filter) : entries;
 
-      const resultObj = options.generate
-        ? options.generate(filteredEntries)
-        : filteredEntries;
+      const resultObj = options.generate ? options.generate(filteredEntries) : filteredEntries;
 
       const text = JSON.stringify(resultObj, null, 2);
 
@@ -204,17 +171,9 @@ export = (options: ManifestPluginOptions = {}): Plugin => ({
   },
 });
 
-const pathToManifest = (
-  initialOptions: BuildOptions,
-  pluginOptions: ManifestPluginOptions,
-): string => {
-  if (
-    initialOptions.outdir === undefined &&
-    initialOptions.outfile === undefined
-  ) {
-    throw new Error(
-      "You must specify an 'outdir' when generating a manifest file.",
-    );
+const pathToManifest = (initialOptions: BuildOptions, pluginOptions: ManifestPluginOptions): string => {
+  if (initialOptions.outdir === undefined && initialOptions.outfile === undefined) {
+    throw new Error("You must specify an 'outdir' when generating a manifest file.");
   }
 
   let outdir = initialOptions.outdir || path.dirname(initialOptions.outfile!);
@@ -229,10 +188,7 @@ const pathToManifest = (
   return path.resolve(outdir, filename);
 };
 
-const writeFileWithLock = async (
-  fullPath: string,
-  text: string,
-): Promise<void> => {
+const writeFileWithLock = async (fullPath: string, text: string): Promise<void> => {
   // Retry up to 5 times, using exponential backoff but capped at 100ms between retries
   // See: https://github.com/tim-kos/node-retry#retrytimeoutsoptions for an explanation of the options
   const retryOptions = {
@@ -271,10 +227,7 @@ const ensureFile = async (fullPath: string): Promise<void> => {
   }
 };
 
-const shouldModify = (
-  inputOrOutput: "input" | "output",
-  optionValue?: OptionValue,
-): boolean => {
+const shouldModify = (inputOrOutput: "input" | "output", optionValue?: OptionValue): boolean => {
   return optionValue === inputOrOutput || optionValue === true;
 };
 
@@ -282,10 +235,7 @@ const shortName = (value: string): string => {
   return path.basename(value);
 };
 
-const relativeName = (
-  filename: string,
-  outputFolder: string | undefined,
-): string => {
+const relativeName = (filename: string, outputFolder: string | undefined): string => {
   return filename.replace(outputFolder || "", "");
 };
 
@@ -326,10 +276,7 @@ const etag = (fileContent: Buffer | string): string => {
   return createHash("md5").update(fileContent).digest("hex");
 };
 
-const fromEntries = (
-  map: Map<string, Mapping>,
-  mergeWith: ManifestEntries,
-): ManifestEntries => {
+const fromEntries = (map: Map<string, Mapping>, mergeWith: ManifestEntries): ManifestEntries => {
   const obj = Array.from(map).reduce((obj: ManifestEntries, [key, value]) => {
     obj[key] = toManifestEntry(value);
     return obj;
@@ -338,10 +285,7 @@ const fromEntries = (
   return { ...mergeWith, ...obj };
 };
 
-const filterEntries = (
-  entries: ManifestEntries,
-  filterFunction: FilterFunction,
-): ManifestEntries => {
+const filterEntries = (entries: ManifestEntries, filterFunction: FilterFunction): ManifestEntries => {
   return Object.keys(entries)
     .filter(filterFunction)
     .reduce((obj: ManifestEntries, key) => {

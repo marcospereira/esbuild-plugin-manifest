@@ -4,12 +4,38 @@ name: Node.js CI
 on: [push, pull_request]
 
 jobs:
+  lint:
+    runs-on: ubuntu-20.04
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18.x
+      - run: yarn install --frozen-lockfile
+      - run: yarn lint
+
+  check-format:
+    runs-on: ubuntu-20.04
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18.x
+      - run: yarn install --frozen-lockfile
+      - run: yarn format:check
+
   build:
     runs-on: ubuntu-20.04
 
     strategy:
       matrix:
         node-version: [ 18.x, 20.x, 21.x]
+
+    needs:
+      - lint
+      - check-format
 
     steps:
       - uses: actions/checkout@v4

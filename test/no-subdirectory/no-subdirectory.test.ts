@@ -13,20 +13,11 @@ test("it should use the proper keys for the manifest when building from the same
   });
 
   // Only worried about testing the keys here
-  const contents = JSON.parse(
-    fs.readFileSync(
-      path.join("test", "no-subdirectory", "manifest.json"),
-      "utf-8",
-    ),
-  );
+  const contents = JSON.parse(fs.readFileSync(path.join("test", "no-subdirectory", "manifest.json"), "utf-8"));
   expect(Object.keys(contents)).toEqual(["example.js", "example.css"]);
 
   // Remove the test artifacts
   fs.unlinkSync(path.join("test", "no-subdirectory", "manifest.json"));
-  fs.unlinkSync(
-    path.join("test", "no-subdirectory", contents["example.js"].file),
-  );
-  fs.unlinkSync(
-    path.join("test", "no-subdirectory", contents["example.css"].file),
-  );
+  fs.unlinkSync(path.join("test", "no-subdirectory", contents["example.js"].file));
+  fs.unlinkSync(path.join("test", "no-subdirectory", contents["example.css"].file));
 });
