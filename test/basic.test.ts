@@ -51,7 +51,7 @@ test('it should generate the manifest.json in the outdir', async () => {
 test('it should generate hashed filenames by default', async () => {
   await require('esbuild').build(buildOptions({}));
 
-  expect(metafileContents()['test/output/example.js']).toHaveProperty('file', 'test/output/example-TM2TU5PS.js');
+  expect(metafileContents()['test/output/example.js']).toHaveProperty('file', 'test/output/example-4EALSENI.js');
 });
 
 test('it should not have an opinion on hashes when a flag is set', async () => {
@@ -64,7 +64,7 @@ test('it should not override the hashing format if one was supplied already', as
   // our internal hash format uses a '-' instead of a '.'
   await require('esbuild').build(buildOptions({}, {entryNames: '[dir]/[name].[hash]'}));
 
-  expect(metafileContents()['test/output/example.js']).toHaveProperty('file', 'test/output/example.WQZWGPFO.js');
+  expect(metafileContents()['test/output/example.js']).toHaveProperty('file', 'test/output/example.LU3IRLCV.js');
 });
 
 test('it should generate long names by default', async () => {
@@ -72,9 +72,9 @@ test('it should generate long names by default', async () => {
 
   expect(metafileContents()).toEqual({
     "test/output/example.js": {
-      "etag": "b10922b033167718e2b3031052833770",
+      "etag": "cd8ae7fc91dc41ce1c81a04847936818",
       "file": "test/output/example.js",
-      "integrity": "g9fnNEI81bgIE1qEBZAG4T/fEcHlNyHJoBu3XUvKAG3nOeMU8rJ61B/3PV+Vc48I",
+      "integrity": "nimO+qH4Z+x/Dh3OQXGSiChAPx1P9Vl2EKLZzm4Y2CO3Fop60eBAAhIMkZRee52A",
       "source": "test/output/example.js",
     }
   });
@@ -85,9 +85,9 @@ test('it should generate short names if specified', async () => {
 
   expect(metafileContents()).toEqual({
     "example.js": {
-      "etag": "b10922b033167718e2b3031052833770",
+      "etag": "cd8ae7fc91dc41ce1c81a04847936818",
       "file": "example.js",
-      "integrity": "g9fnNEI81bgIE1qEBZAG4T/fEcHlNyHJoBu3XUvKAG3nOeMU8rJ61B/3PV+Vc48I",
+      "integrity": "nimO+qH4Z+x/Dh3OQXGSiChAPx1P9Vl2EKLZzm4Y2CO3Fop60eBAAhIMkZRee52A",
       "source": "test/output/example.js"
     }
   });
@@ -98,9 +98,9 @@ test('it should allow a short name for the input only', async () => {
 
   expect(metafileContents()).toEqual({
     "example.js": {
-      "etag": "b10922b033167718e2b3031052833770",
+      "etag": "cd8ae7fc91dc41ce1c81a04847936818",
       "file": "test/output/example.js",
-      "integrity": "g9fnNEI81bgIE1qEBZAG4T/fEcHlNyHJoBu3XUvKAG3nOeMU8rJ61B/3PV+Vc48I",
+      "integrity": "nimO+qH4Z+x/Dh3OQXGSiChAPx1P9Vl2EKLZzm4Y2CO3Fop60eBAAhIMkZRee52A",
       "source": "test/output/example.js",
     }
   });
@@ -111,9 +111,9 @@ test('it should allow a short name for the output only', async () => {
 
   expect(metafileContents()).toEqual({
     "test/output/example.js": {
-      "etag": "b10922b033167718e2b3031052833770",
+      "etag": "cd8ae7fc91dc41ce1c81a04847936818",
       "file": "example.js",
-      "integrity": "g9fnNEI81bgIE1qEBZAG4T/fEcHlNyHJoBu3XUvKAG3nOeMU8rJ61B/3PV+Vc48I",
+      "integrity": "nimO+qH4Z+x/Dh3OQXGSiChAPx1P9Vl2EKLZzm4Y2CO3Fop60eBAAhIMkZRee52A",
       "source": "test/output/example.js"
     }
   });
@@ -139,15 +139,15 @@ test('it should not throw an error if the short name has the same extension but 
 
   expect(metafileContents()).toEqual({
     "example.js": {
-      "etag": "b10922b033167718e2b3031052833770",
+      "etag": "cd8ae7fc91dc41ce1c81a04847936818",
       "file": "example.js",
-      "integrity": "g9fnNEI81bgIE1qEBZAG4T/fEcHlNyHJoBu3XUvKAG3nOeMU8rJ61B/3PV+Vc48I",
+      "integrity": "nimO+qH4Z+x/Dh3OQXGSiChAPx1P9Vl2EKLZzm4Y2CO3Fop60eBAAhIMkZRee52A",
       "source": "test/output/example.js"
     },
     "index.js": {
-      "etag": "4694eb03ef8c45e99982c1498c14b5d7",
+      "etag": "f504018c09b2e03bcd49ea87c6a12b61",
       "file": "index.js",
-      "integrity": "bxjaJQy+wK5iAuw4M2hS7WVPApv9sSfXyDSrlxL6ZcK2Io774FFqHhRP1HRSvy0R",
+      "integrity": "luEqIZuCcnb7U0fDIVbzkzFJ4fY4nGdYtZskYF7EkdDuHfyddSxA9nsZ5yRfVMZX",
       "source": "test/output/pages/home/index.js"
     }
   });
@@ -162,15 +162,15 @@ test('it should not throw an error if the entrypoints have the same name, differ
 
   expect(metafileContents()).toEqual({
     "index.js": {
-      "etag": "4694eb03ef8c45e99982c1498c14b5d7",
+      "etag": "f504018c09b2e03bcd49ea87c6a12b61",
       "file": "index.js",
-      "integrity": "bxjaJQy+wK5iAuw4M2hS7WVPApv9sSfXyDSrlxL6ZcK2Io774FFqHhRP1HRSvy0R",
+      "integrity": "luEqIZuCcnb7U0fDIVbzkzFJ4fY4nGdYtZskYF7EkdDuHfyddSxA9nsZ5yRfVMZX",
       "source": "test/input/pages/home/index.js"
     },
     "index.ts": {
-      "etag": "13a53b958519519ded3a10eb701db4be",
+      "etag": "70c4fb2de806ac50eb906d27f6bd13b2",
       "file": "index.js",
-      "integrity": "rCk2iikSVs/QfYt1NljFRP3vJBg/wlwOK1jWzb943CGfmzTAT91jqEPib+N7s9KN",
+      "integrity": "GMGz1u+Jvx0Rn1hjMugiN0OkJkBrp7jFRPjj1BHz7XGw2LSb/fuYI4gozZXmVmId",
       "source": "test/input/pages/about/index.ts"
     }
   });
@@ -259,9 +259,9 @@ test('it should allow multiple entrypoints with same css', async () => {
       "source": "test/output/example.css",
     },
     "test/output/example.js": {
-      "etag": "c702abdf049a2f21bc15ad6b7829e98a",
+      "etag": "29f40a874725124188915b036a9e6714",
       "file": "test/output/example.js",
-      "integrity": "KCCZhbucz5r84a/4NBJ73lBIeOoglm70UBvXSWXEZgu3vUvoX/6mCeJOoLRtDaTv",
+      "integrity": "l6rghg35AvNTqd3kT2dfOVNgsV2VEB+SNJ9extTZVqbUh2pLS2O8uIRRkmPDPSlt",
       "source": "test/output/example.js",
     },
     "test/output/example2.css": {
@@ -271,9 +271,9 @@ test('it should allow multiple entrypoints with same css', async () => {
       "source": "test/output/example2.css",
     },
     "test/output/example2.js": {
-      "etag": "6996645e5faeb5f6f9411bceb729f0d0",
+      "etag": "4e27154e8e4573a8c3097dab28e8af6f",
       "file": "test/output/example2.js",
-      "integrity": "Jzra72/2c7bse1t3ubEL+TE+9jkiw4tdmKn8jtTi8XljfHf/pjzycKv4195VE2za",
+      "integrity": "jiNBByEeQp22pe5wSvB8XwdND1J56+RqJz8NT7YIXnp5xWLWuY73o4H3j0dhEG1U",
       "source": "test/output/example2.js",
     },
   });
@@ -290,9 +290,9 @@ test('it should include an imported css file that is not an explicit entrypoint'
       "source": "test/output/example.css",
     },
     "test/output/example.js": {
-      "etag": "c702abdf049a2f21bc15ad6b7829e98a",
+      "etag": "29f40a874725124188915b036a9e6714",
       "file": "test/output/example.js",
-      "integrity": "KCCZhbucz5r84a/4NBJ73lBIeOoglm70UBvXSWXEZgu3vUvoX/6mCeJOoLRtDaTv",
+      "integrity": "l6rghg35AvNTqd3kT2dfOVNgsV2VEB+SNJ9extTZVqbUh2pLS2O8uIRRkmPDPSlt",
       "source": "test/output/example.js",
     },
   });
@@ -309,9 +309,9 @@ test('it should map a sibling css file when no hash is used', async () => {
       "source": "test/output/example.css",
     },
     "test/output/example.js": {
-      "etag": "c702abdf049a2f21bc15ad6b7829e98a",
+      "etag": "29f40a874725124188915b036a9e6714",
       "file": "test/output/example.js",
-      "integrity": "KCCZhbucz5r84a/4NBJ73lBIeOoglm70UBvXSWXEZgu3vUvoX/6mCeJOoLRtDaTv",
+      "integrity": "l6rghg35AvNTqd3kT2dfOVNgsV2VEB+SNJ9extTZVqbUh2pLS2O8uIRRkmPDPSlt",
       "source": "test/output/example.js",
     },
   });
@@ -322,8 +322,8 @@ test('it should map a sibling css file when the standard hash is used', async ()
 
   const contents = metafileContents();
 
-  expect(contents['test/output/example.js']).toHaveProperty('file', 'test/output/example-XTLCBWFF.js');
-  expect(contents['test/output/example.css']).toHaveProperty('file', 'test/output/example-GQI5TWWV.css');
+  expect(contents['test/output/example.js']).toHaveProperty('file', 'test/output/example-NJWZG5S4.js');
+  expect(contents['test/output/example.css']).toHaveProperty('file', 'test/output/example-PYM4QSLI.css');
 })
 
 test('it should map a sibling css file when a different hash is used', async () => {
@@ -334,8 +334,8 @@ test('it should map a sibling css file when a different hash is used', async () 
 
   const contents = metafileContents();
 
-  expect(contents['test/output/example.js']).toHaveProperty('file', 'test/output/example.WD5UUBCK.js');
-  expect(contents['test/output/example.css']).toHaveProperty('file', 'test/output/example.3AFJQGEY.css');
+  expect(contents['test/output/example.js']).toHaveProperty('file', 'test/output/example.GKFWWQKW.js');
+  expect(contents['test/output/example.css']).toHaveProperty('file', 'test/output/example.Y6EEL3QK.css');
 })
 
 test('it should map a sibling css file when the hash runs up directly against the filename', async () => {
@@ -347,8 +347,8 @@ test('it should map a sibling css file when the hash runs up directly against th
 
   const contents = metafileContents();
 
-  expect(contents['test/output/example.js']).toHaveProperty('file', 'test/output/exampleRMF27ZCU.js');
-  expect(contents['test/output/example.css']).toHaveProperty('file', 'test/output/examplePEWCBBN7.css');
+  expect(contents['test/output/example.js']).toHaveProperty('file', 'test/output/exampleSVNZSNZX.js');
+  expect(contents['test/output/example.css']).toHaveProperty('file', 'test/output/exampleLP3NES34.css');
 });
 
 test('it should map a sibling css file when the hash comes before a suffix', async () => {
@@ -360,14 +360,14 @@ test('it should map a sibling css file when the hash comes before a suffix', asy
   const contents = metafileContents();
 
   expect(contents['test/output/example-FOO.js']).toEqual({
-    "etag": "c702abdf049a2f21bc15ad6b7829e98a",
-    "file": "test/output/example-UDCOIXTA-FOO.js",
-    "integrity": "KCCZhbucz5r84a/4NBJ73lBIeOoglm70UBvXSWXEZgu3vUvoX/6mCeJOoLRtDaTv",
+    "etag": "29f40a874725124188915b036a9e6714",
+    "file": "test/output/example-3D245B7Z-FOO.js",
+    "integrity": "l6rghg35AvNTqd3kT2dfOVNgsV2VEB+SNJ9extTZVqbUh2pLS2O8uIRRkmPDPSlt",
     "source": "test/output/example-FOO.js"
   });
   expect(contents['test/output/example-FOO.css']).toEqual({
     "etag": "d861a27cb8083dd5a254c18fb47036e1",
-    "file": "test/output/example-ZNREH66Y-FOO.css",
+    "file": "test/output/example-CRGCON3Y-FOO.css",
     "integrity": "az72to4rJ+UHsi96ok0AiWeFPEL974GZLzlmg0P1gGVQSVyZTLfyyXUmioJH6T3y",
     "source": "test/output/example-FOO.css"
   });
@@ -382,14 +382,14 @@ test('it should map a sibling css file when the hash runs up directly against a 
   const contents = metafileContents();
 
   expect(contents['test/output/exampleFOO.js']).toEqual({
-    "etag": "c702abdf049a2f21bc15ad6b7829e98a",
-    "file": "test/output/example-WYQNDWQXFOO.js",
-    "integrity": "KCCZhbucz5r84a/4NBJ73lBIeOoglm70UBvXSWXEZgu3vUvoX/6mCeJOoLRtDaTv",
+    "etag": "29f40a874725124188915b036a9e6714",
+    "file": "test/output/example-KFF5SEPEFOO.js",
+    "integrity": "l6rghg35AvNTqd3kT2dfOVNgsV2VEB+SNJ9extTZVqbUh2pLS2O8uIRRkmPDPSlt",
     "source": "test/output/exampleFOO.js"
   });
   expect(contents['test/output/exampleFOO.css']).toEqual({
     "etag": "d861a27cb8083dd5a254c18fb47036e1",
-    "file": "test/output/example-UWCVZI52FOO.css",
+    "file": "test/output/example-322V2GLXFOO.css",
     "integrity": "az72to4rJ+UHsi96ok0AiWeFPEL974GZLzlmg0P1gGVQSVyZTLfyyXUmioJH6T3y",
     "source": "test/output/exampleFOO.css"
   });
@@ -422,7 +422,7 @@ test('it should not attempt to find a sibling for a css entrypoint ', async () =
 
   expect(contents['test/output/global.css']).toEqual({
     "etag": "d861a27cb8083dd5a254c18fb47036e1",
-    "file": "test/output/global-O7H3HB2W.css",
+    "file": "test/output/global-H2AYUOFW.css",
     "integrity": "az72to4rJ+UHsi96ok0AiWeFPEL974GZLzlmg0P1gGVQSVyZTLfyyXUmioJH6T3y",
     "source": "test/output/global.css"
   });
@@ -433,9 +433,9 @@ test('it should map typescript files', async () => {
 
   expect(metafileContents()).toEqual({
     "test/output/example.js": {
-      "etag": "b8e7263e946f16015d9d6db02f3ea3b1",
+      "etag": "f9fb6d922c82b93dd115b135730ab67d",
       "file": "test/output/example.js",
-      "integrity": "hTC9oniqF+c+oZF7Ih9oq7MrmKdpzzzK9/fAvd+TzCYsZ5M3PDNSXGzL2yMh42fD",
+      "integrity": "PwSfbcBNuu0ZpIl9rxo+XSHmWk6iztuO8iZpkvXtMDwhc9+CuTnKYS6JIuWlYBN5",
       "source": "test/output/example.js",
     },
   });
@@ -452,9 +452,9 @@ test('it should map typescript files that import css', async () => {
       "source": "test/output/example-typescript.css",
     },
     "test/output/example-typescript.js": {
-      "etag": "0712815050e4ce939f571f14d4ca6a93",
+      "etag": "9cf7f6cc276b7ae036c6a67e196f5255",
       "file": "test/output/example-typescript.js",
-      "integrity": "j1BAaq6Qu9eI0X8U43QxFNSGokmo7iEdSduzPQ/Oi98tYAOobBLvMUG+FXThNHig",
+      "integrity": "JyJ0kfvSVYC3+PO6G9z66FQ4pw1/EC/mQqn4kCOa4+XAdntrVUWrVgNSwBOKXkAi",
       "source": "test/output/example-typescript.js",
     },
   });
@@ -468,9 +468,9 @@ test('it should include an imported image file that is not an explicit entrypoin
 
   const contents = metafileContents();
   expect(contents['test/output/example.js']).toEqual({
-    "etag": "844cdacd41353249adeddc8c3fffc6e4",
-    "file": "test/output/example-7MNN44HF.js",
-    "integrity": "9NBVdQZdfB1bA4KKddlkLNBz4LnSSSH9EZsmZCesPzyPY9T2qispM/M3ojVie0fi",
+    "etag": "b5bea45ccf67f50d768b4cc1fc3acc9d",
+    "file": "test/output/example-CNX5E3QA.js",
+    "integrity": "EaCB1WpRRlkiRaou2UbTw2gINEZJelMPYRzdDa9q9QKGjXpzmZjiI+S1z82uFe/m",
     "source": "test/output/example.js"
   });
   expect(contents['test/output/example.png']).toEqual({
@@ -489,17 +489,17 @@ test('it should include an imported image file that is not an explicit entrypoin
 
   expect(metafileContents()).toEqual({
     "test/output/example.js": {
-      "etag": "931516d3df03faf2924e21a6e7186e69",
+      "etag": "67a6ee4b7e4deabda4096a5b56c989a3",
       "file": "test/output/example.js",
-      "integrity": "gCUZmV3iwU2cGCbRh8pkGzpHq8l2MQgbPA8iVywuq9w8oIVH0uu1U5ZUOQvlc17O",
-      "source": "test/output/example.js",
+      "integrity": "voTRTPaSfv4RhasFOIVYPJ+t4EH6mOzaRnXyd0TaKtkw9bO33hPgx/xdZxXzUDxO",
+      "source": "test/output/example.js"
     },
     "test/output/example.png": {
       "etag": "63d5a027014895f42d4deb864d539d58",
       "file": "test/output/example.png",
       "integrity": "RCAoIWtw46cYknOSs7fjnkvHvA/KAXGw0Q8UGXheWn2kV8jdArT+MR7lBCnE0L+V",
-      "source": "test/output/example.png",
-    },
+      "source": "test/output/example.png"
+    }
   });
 });
 
@@ -512,9 +512,9 @@ test('it should include assets placed inside their own directory within the outd
 
   const contents = metafileContents();
   expect(contents['test/output/example.js']).toEqual({
-    "etag": "3206b527f8b6495859575f938f746811",
-    "file": "test/output/example-RHTDZ42D.js",
-    "integrity": "S/8Dnj1T9HYLMP4GTf9MAmXHXezOEOocWbjA7xCp51YGfJJBVxEs9YCWPqeBYzDD",
+    "etag": "d5b5bd6af0258d14a6ae987ad3a47316",
+    "file": "test/output/example-E6VQ3Q2T.js",
+    "integrity": "pXWfV0GbaLDOhodjy0B/2pzOJc/6u2WYHWw5sb2/q4UK7sOKVH/kfybKxErhSimG",
     "source": "test/output/example.js"
   });
   expect(contents['test/output/assets/example.png']).toEqual({
@@ -543,9 +543,9 @@ test('it should allow an extensionless input', async () => {
 
   expect(metafileContents()).toEqual({
     "test/output/example": {
-      "etag": "b10922b033167718e2b3031052833770",
+      "etag": "cd8ae7fc91dc41ce1c81a04847936818",
       "file": "test/output/example.js",
-      "integrity": "g9fnNEI81bgIE1qEBZAG4T/fEcHlNyHJoBu3XUvKAG3nOeMU8rJ61B/3PV+Vc48I",
+      "integrity": "nimO+qH4Z+x/Dh3OQXGSiChAPx1P9Vl2EKLZzm4Y2CO3Fop60eBAAhIMkZRee52A",
       "source": "test/output/example.js",
     },
   });
@@ -556,9 +556,9 @@ test('it should allow an extensionless output', async () => {
 
   expect(metafileContents()).toEqual({
     "test/output/example.js": {
-      "etag": "b10922b033167718e2b3031052833770",
+      "etag": "cd8ae7fc91dc41ce1c81a04847936818",
       "file": "test/output/example",
-      "integrity": "g9fnNEI81bgIE1qEBZAG4T/fEcHlNyHJoBu3XUvKAG3nOeMU8rJ61B/3PV+Vc48I",
+      "integrity": "nimO+qH4Z+x/Dh3OQXGSiChAPx1P9Vl2EKLZzm4Y2CO3Fop60eBAAhIMkZRee52A",
       "source": "test/output/example.js"
     }
   });
@@ -569,9 +569,9 @@ test('it should allow an extensionless input and output by specifying true', asy
 
   expect(metafileContents()).toEqual({
     "test/output/example": {
-      "etag": "b10922b033167718e2b3031052833770",
+      "etag": "cd8ae7fc91dc41ce1c81a04847936818",
       "file": "test/output/example",
-      "integrity": "g9fnNEI81bgIE1qEBZAG4T/fEcHlNyHJoBu3XUvKAG3nOeMU8rJ61B/3PV+Vc48I",
+      "integrity": "nimO+qH4Z+x/Dh3OQXGSiChAPx1P9Vl2EKLZzm4Y2CO3Fop60eBAAhIMkZRee52A",
       "source": "test/output/example.js"
     }
   });
@@ -582,9 +582,9 @@ test('it should allow an extensionless input with shortnames', async () => {
 
   expect(metafileContents()).toEqual({
     "example": {
-      "etag": "b10922b033167718e2b3031052833770",
+      "etag": "cd8ae7fc91dc41ce1c81a04847936818",
       "file": "example.js",
-      "integrity": "g9fnNEI81bgIE1qEBZAG4T/fEcHlNyHJoBu3XUvKAG3nOeMU8rJ61B/3PV+Vc48I",
+      "integrity": "nimO+qH4Z+x/Dh3OQXGSiChAPx1P9Vl2EKLZzm4Y2CO3Fop60eBAAhIMkZRee52A",
       "source": "test/output/example.js"
     }
   });
@@ -595,9 +595,9 @@ test('it should allow an extensionless output with shortnames', async () => {
 
   expect(metafileContents()).toEqual({
     "example.js": {
-      "etag": "b10922b033167718e2b3031052833770",
+      "etag": "cd8ae7fc91dc41ce1c81a04847936818",
       "file": "example",
-      "integrity": "g9fnNEI81bgIE1qEBZAG4T/fEcHlNyHJoBu3XUvKAG3nOeMU8rJ61B/3PV+Vc48I",
+      "integrity": "nimO+qH4Z+x/Dh3OQXGSiChAPx1P9Vl2EKLZzm4Y2CO3Fop60eBAAhIMkZRee52A",
       "source": "test/output/example.js"
     }
   });
@@ -610,9 +610,9 @@ test.each([
     buildOptions: {outExtension: {'.js': '.min.js'}},
     expected: {
       "test/output/example": {
-        "etag": "b10922b033167718e2b3031052833770",
+        "etag": "cd8ae7fc91dc41ce1c81a04847936818",
         "file": "test/output/example.min.js",
-        "integrity": "g9fnNEI81bgIE1qEBZAG4T/fEcHlNyHJoBu3XUvKAG3nOeMU8rJ61B/3PV+Vc48I",
+        "integrity": "nimO+qH4Z+x/Dh3OQXGSiChAPx1P9Vl2EKLZzm4Y2CO3Fop60eBAAhIMkZRee52A",
         "source": "test/output/example.min.js",
       },
     },
@@ -623,9 +623,9 @@ test.each([
     buildOptions: {outExtension: {'.js': '.min.js'}},
     expected: {
       "test/output/example.min.js": {
-        "etag": "b10922b033167718e2b3031052833770",
+        "etag": "cd8ae7fc91dc41ce1c81a04847936818",
         "file": "test/output/example",
-        "integrity": "g9fnNEI81bgIE1qEBZAG4T/fEcHlNyHJoBu3XUvKAG3nOeMU8rJ61B/3PV+Vc48I",
+        "integrity": "nimO+qH4Z+x/Dh3OQXGSiChAPx1P9Vl2EKLZzm4Y2CO3Fop60eBAAhIMkZRee52A",
         "source": "test/output/example.min.js",
       },
     },
@@ -636,17 +636,17 @@ test.each([
     buildOptions: {sourcemap: true},
     expected: {
       "test/output/example": {
-        "etag": "e049bae6042c2875a1a08f0b2e861427",
+        "etag": "4e3bab64b116539620d916f8f78a051e",
         "file": "test/output/example.js",
-        "integrity": "/uyTIa7xg4L04bUJBKjW5z6scVAZxR6hiKbMLD6mjzLc+5bmdZhejw9WyCYAYgeA",
-        "source": "test/output/example.js",
+        "integrity": "9NYoCOTZw3WxlghTilfFv7PZSiuzo3Nf2FzlTXKogkNGrbY/z4b04Btr9FhMJwo2",
+        "source": "test/output/example.js"
       },
       "test/output/example.map": {
-        "etag": "cb342b2c6d735815d8e4e7cbde0aa369",
+        "etag": "772ea7825523cff09a7d0fb280d708b8",
         "file": "test/output/example.js.map",
-        "integrity": "1KaNWheI8TZhtGHASFaPrXP+V31dIRKhtp1tWSJQ/tw25LcmrK3WgLJ0/ta+QB4r",
-        "source": "test/output/example.js.map",
-      },
+        "integrity": "RzL2RVcj6qFV4vzIkN1FZyaVOsEkYmp3kYo3VuLp7tArB1lDm4JmlvTLtk58DfNV",
+        "source": "test/output/example.js.map"
+      }
     },
   },
   {
@@ -655,15 +655,15 @@ test.each([
     buildOptions: {sourcemap: true},
     expected: {
       "test/output/example.js": {
-        "etag": "e049bae6042c2875a1a08f0b2e861427",
+        "etag": "4e3bab64b116539620d916f8f78a051e",
         "file": "test/output/example",
-        "integrity": "/uyTIa7xg4L04bUJBKjW5z6scVAZxR6hiKbMLD6mjzLc+5bmdZhejw9WyCYAYgeA",
+        "integrity": "9NYoCOTZw3WxlghTilfFv7PZSiuzo3Nf2FzlTXKogkNGrbY/z4b04Btr9FhMJwo2",
         "source": "test/output/example.js"
       },
       "test/output/example.js.map": {
-        "etag": "cb342b2c6d735815d8e4e7cbde0aa369",
+        "etag": "772ea7825523cff09a7d0fb280d708b8",
         "file": "test/output/example.map",
-        "integrity": "1KaNWheI8TZhtGHASFaPrXP+V31dIRKhtp1tWSJQ/tw25LcmrK3WgLJ0/ta+QB4r",
+        "integrity": "RzL2RVcj6qFV4vzIkN1FZyaVOsEkYmp3kYo3VuLp7tArB1lDm4JmlvTLtk58DfNV",
         "source": "test/output/example.js.map"
       }
     },
@@ -719,9 +719,9 @@ test('it should modify result using generate function', async () => {
   expect(metafileContents()).toEqual({
     "files": {
       "test/output/example.js": {
-        "etag": "b10922b033167718e2b3031052833770",
+        "etag": "cd8ae7fc91dc41ce1c81a04847936818",
         "file": "test/output/example.js",
-        "integrity": "g9fnNEI81bgIE1qEBZAG4T/fEcHlNyHJoBu3XUvKAG3nOeMU8rJ61B/3PV+Vc48I",
+        "integrity": "nimO+qH4Z+x/Dh3OQXGSiChAPx1P9Vl2EKLZzm4Y2CO3Fop60eBAAhIMkZRee52A",
         "source": "test/output/example.js",
       },
     }
@@ -764,9 +764,9 @@ test('it should use the same extension as the output when it is changed via the 
 
   expect(metafileContents()).toEqual({
     "test/output/example.mjs": {
-      "etag": "b10922b033167718e2b3031052833770",
+      "etag": "cd8ae7fc91dc41ce1c81a04847936818",
       "file": "test/output/example.mjs",
-      "integrity": "g9fnNEI81bgIE1qEBZAG4T/fEcHlNyHJoBu3XUvKAG3nOeMU8rJ61B/3PV+Vc48I",
+      "integrity": "nimO+qH4Z+x/Dh3OQXGSiChAPx1P9Vl2EKLZzm4Y2CO3Fop60eBAAhIMkZRee52A",
       "source": "test/output/example.mjs",
     },
   });
@@ -777,9 +777,9 @@ test('it should use the same extension as the entry with useEntrypointKeys optio
 
   expect(metafileContents()).toEqual({
     "test/input/example.js": {
-      "etag": "b10922b033167718e2b3031052833770",
+      "etag": "cd8ae7fc91dc41ce1c81a04847936818",
       "file": "test/output/example.mjs",
-      "integrity": "g9fnNEI81bgIE1qEBZAG4T/fEcHlNyHJoBu3XUvKAG3nOeMU8rJ61B/3PV+Vc48I",
+      "integrity": "nimO+qH4Z+x/Dh3OQXGSiChAPx1P9Vl2EKLZzm4Y2CO3Fop60eBAAhIMkZRee52A",
       "source": "test/input/example.js",
     },
   });
@@ -793,11 +793,11 @@ test('it should use the same extension as the entry with useEntrypointKeys optio
 
   expect(metafileContents()).toEqual({
     "test/input/example.ts": {
-      "etag": "b8e7263e946f16015d9d6db02f3ea3b1",
+      "etag": "f9fb6d922c82b93dd115b135730ab67d",
       "file": "test/output/example.js",
-      "integrity": "hTC9oniqF+c+oZF7Ih9oq7MrmKdpzzzK9/fAvd+TzCYsZ5M3PDNSXGzL2yMh42fD",
-      "source": "test/input/example.ts",
-    },
+      "integrity": "PwSfbcBNuu0ZpIl9rxo+XSHmWk6iztuO8iZpkvXtMDwhc9+CuTnKYS6JIuWlYBN5",
+      "source": "test/input/example.ts"
+    }
   });
 });
 
@@ -809,9 +809,9 @@ test('it should use the same extension as the entry with useEntrypointKeys optio
 
   expect(metafileContents()).toEqual({
     "test/input/example.js": {
-      "etag": "b10922b033167718e2b3031052833770",
+      "etag": "cd8ae7fc91dc41ce1c81a04847936818",
       "file": "test/output/out.mjs",
-      "integrity": "g9fnNEI81bgIE1qEBZAG4T/fEcHlNyHJoBu3XUvKAG3nOeMU8rJ61B/3PV+Vc48I",
+      "integrity": "nimO+qH4Z+x/Dh3OQXGSiChAPx1P9Vl2EKLZzm4Y2CO3Fop60eBAAhIMkZRee52A",
       "source": "test/input/example.js",
     },
   });
@@ -851,9 +851,9 @@ test('it is able to use extensionless=output along with useEntrypointKeys', asyn
 
   expect(metafileContents()).toEqual({
     "test/input/example.js": {
-      "etag": "b10922b033167718e2b3031052833770",
+      "etag": "cd8ae7fc91dc41ce1c81a04847936818",
       "file": "test/output/example",
-      "integrity": "g9fnNEI81bgIE1qEBZAG4T/fEcHlNyHJoBu3XUvKAG3nOeMU8rJ61B/3PV+Vc48I",
+      "integrity": "nimO+qH4Z+x/Dh3OQXGSiChAPx1P9Vl2EKLZzm4Y2CO3Fop60eBAAhIMkZRee52A",
       "source": "test/input/example.js",
     },
   });
@@ -868,15 +868,15 @@ test('it should retain a previous key with append=true option', async () => {
 
   expect(metafileContents()).toEqual({
     "test/output/example.js": {
-      "etag": "b10922b033167718e2b3031052833770",
+      "etag": "cd8ae7fc91dc41ce1c81a04847936818",
       "file": "test/output/example.js",
-      "integrity": "g9fnNEI81bgIE1qEBZAG4T/fEcHlNyHJoBu3XUvKAG3nOeMU8rJ61B/3PV+Vc48I",
+      "integrity": "nimO+qH4Z+x/Dh3OQXGSiChAPx1P9Vl2EKLZzm4Y2CO3Fop60eBAAhIMkZRee52A",
       "source": "test/output/example.js",
     },
     "test/output/index.js": {
-      "etag": "4694eb03ef8c45e99982c1498c14b5d7",
+      "etag": "f504018c09b2e03bcd49ea87c6a12b61",
       "file": "test/output/index.js",
-      "integrity": "bxjaJQy+wK5iAuw4M2hS7WVPApv9sSfXyDSrlxL6ZcK2Io774FFqHhRP1HRSvy0R",
+      "integrity": "luEqIZuCcnb7U0fDIVbzkzFJ4fY4nGdYtZskYF7EkdDuHfyddSxA9nsZ5yRfVMZX",
       "source": "test/output/index.js",
     },
   });
@@ -890,9 +890,9 @@ test('it should overwrite a previous key with append=true option if its been upd
 
   expect(metafileContents()).toEqual({
     "test/output/example.js": {
-      "etag": "b10922b033167718e2b3031052833770",
+      "etag": "cd8ae7fc91dc41ce1c81a04847936818",
       "file": "test/output/example.js",
-      "integrity": "g9fnNEI81bgIE1qEBZAG4T/fEcHlNyHJoBu3XUvKAG3nOeMU8rJ61B/3PV+Vc48I",
+      "integrity": "nimO+qH4Z+x/Dh3OQXGSiChAPx1P9Vl2EKLZzm4Y2CO3Fop60eBAAhIMkZRee52A",
       "source": "test/output/example.js",
     }
   });
@@ -903,9 +903,9 @@ test('it should not throw an error if there is no preexisting file with append=t
 
   expect(metafileContents()).toEqual({
     "test/output/example.js": {
-      "etag": "b10922b033167718e2b3031052833770",
+      "etag": "cd8ae7fc91dc41ce1c81a04847936818",
       "file": "test/output/example.js",
-      "integrity": "g9fnNEI81bgIE1qEBZAG4T/fEcHlNyHJoBu3XUvKAG3nOeMU8rJ61B/3PV+Vc48I",
+      "integrity": "nimO+qH4Z+x/Dh3OQXGSiChAPx1P9Vl2EKLZzm4Y2CO3Fop60eBAAhIMkZRee52A",
       "source": "test/output/example.js",
     }
   });
@@ -917,15 +917,15 @@ test('it supports multiple output formats by using append=true and running esbui
 
   expect(metafileContents()).toEqual({
     "test/output/example.cjs": {
-      "etag": "b10922b033167718e2b3031052833770",
+      "etag": "cd8ae7fc91dc41ce1c81a04847936818",
       "file": "test/output/example.cjs",
-      "integrity": "g9fnNEI81bgIE1qEBZAG4T/fEcHlNyHJoBu3XUvKAG3nOeMU8rJ61B/3PV+Vc48I",
+      "integrity": "nimO+qH4Z+x/Dh3OQXGSiChAPx1P9Vl2EKLZzm4Y2CO3Fop60eBAAhIMkZRee52A",
       "source": "test/output/example.cjs",
     },
     "test/output/example.mjs": {
-      "etag": "b10922b033167718e2b3031052833770",
+      "etag": "cd8ae7fc91dc41ce1c81a04847936818",
       "file": "test/output/example.mjs",
-      "integrity": "g9fnNEI81bgIE1qEBZAG4T/fEcHlNyHJoBu3XUvKAG3nOeMU8rJ61B/3PV+Vc48I",
+      "integrity": "nimO+qH4Z+x/Dh3OQXGSiChAPx1P9Vl2EKLZzm4Y2CO3Fop60eBAAhIMkZRee52A",
       "source": "test/output/example.mjs",
     },
   });
@@ -936,9 +936,9 @@ test('it should keep the file when filter function returns true', async () => {
 
   expect(metafileContents()).toEqual({
     "test/output/example.js": {
-      "etag": "b10922b033167718e2b3031052833770",
+      "etag": "cd8ae7fc91dc41ce1c81a04847936818",
       "file": "test/output/example.js",
-      "integrity": "g9fnNEI81bgIE1qEBZAG4T/fEcHlNyHJoBu3XUvKAG3nOeMU8rJ61B/3PV+Vc48I",
+      "integrity": "nimO+qH4Z+x/Dh3OQXGSiChAPx1P9Vl2EKLZzm4Y2CO3Fop60eBAAhIMkZRee52A",
       "source": "test/output/example.js",
     }
   });
@@ -949,9 +949,9 @@ test('it should remove the outdir folder prefix when configured to have relative
 
   expect(metafileContents()).toEqual({
     "/example.js": {
-      "etag": "b10922b033167718e2b3031052833770",
-      "file": "/example-TM2TU5PS.js",
-      "integrity": "g9fnNEI81bgIE1qEBZAG4T/fEcHlNyHJoBu3XUvKAG3nOeMU8rJ61B/3PV+Vc48I",
+      "etag": "cd8ae7fc91dc41ce1c81a04847936818",
+      "file": "/example-4EALSENI.js",
+      "integrity": "nimO+qH4Z+x/Dh3OQXGSiChAPx1P9Vl2EKLZzm4Y2CO3Fop60eBAAhIMkZRee52A",
       "source": "test/output/example.js",
     }
   });
@@ -962,9 +962,9 @@ test('it should remove the outdir folder prefix when configured to have relative
 
   expect(metafileContents()).toEqual({
     "/example.js": {
-      "etag": "b10922b033167718e2b3031052833770",
-      "file": "test/output/example-TM2TU5PS.js",
-      "integrity": "g9fnNEI81bgIE1qEBZAG4T/fEcHlNyHJoBu3XUvKAG3nOeMU8rJ61B/3PV+Vc48I",
+      "etag": "cd8ae7fc91dc41ce1c81a04847936818",
+      "file": "test/output/example-4EALSENI.js",
+      "integrity": "nimO+qH4Z+x/Dh3OQXGSiChAPx1P9Vl2EKLZzm4Y2CO3Fop60eBAAhIMkZRee52A",
       "source": "test/output/example.js",
     }
   });
@@ -975,9 +975,9 @@ test('it should remove the outdir folder prefix when configured to have relative
 
   expect(metafileContents()).toEqual({
     "test/output/example.js": {
-      "etag": "b10922b033167718e2b3031052833770",
-      "file": "/example-TM2TU5PS.js",
-      "integrity": "g9fnNEI81bgIE1qEBZAG4T/fEcHlNyHJoBu3XUvKAG3nOeMU8rJ61B/3PV+Vc48I",
+      "etag": "cd8ae7fc91dc41ce1c81a04847936818",
+      "file": "/example-4EALSENI.js",
+      "integrity": "nimO+qH4Z+x/Dh3OQXGSiChAPx1P9Vl2EKLZzm4Y2CO3Fop60eBAAhIMkZRee52A",
       "source": "test/output/example.js",
     }
   });
@@ -996,16 +996,17 @@ test('it should use the hashed filename of chunks as keys when splitting is enab
     format: 'esm',
   }));
 
-  expect(metafileContents()['test/output/chunk-JYYV63CZ.js']).toEqual({
+  const contents = metafileContents();
+  expect(contents['test/output/chunk-YJHBKB32.js']).toEqual({
     "etag": "e34f96e82507dfc22c45ee0a90877f7f",
-    "file": "test/output/chunk-JYYV63CZ.js",
+    "file": "test/output/chunk-YJHBKB32.js",
     "integrity": "4B/PkotLJjUpXQFN5rYtHqC0Me2J6iBt3Tv9UKRx3KG5j6Mr5X5s3AqoP8UFCR0l",
-    "source": "test/output/chunk-JYYV63CZ.js"
+    "source": "test/output/chunk-YJHBKB32.js"
   });
-  expect(metafileContents()['test/output/chunk-VDNVJE6B.js']).toEqual({
+  expect(contents['test/output/chunk-CGERAYKX.js']).toEqual({
     "etag": "8d45703784911efab7b1e53b9365389b",
-    "file": "test/output/chunk-VDNVJE6B.js",
+    "file": "test/output/chunk-CGERAYKX.js",
     "integrity": "dpcsqKCEcpcoFjMdaxSOmLaLEwf5+/JBgUClpN3jnpq1vyMU15p3YePEI+MIJPsk",
-    "source": "test/output/chunk-VDNVJE6B.js"
+    "source": "test/output/chunk-CGERAYKX.js"
   });
 });
