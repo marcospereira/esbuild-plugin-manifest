@@ -42,6 +42,8 @@ interface ManifestEntries {
   [key: string]: ManifestEntry
 }
 
+type FilterFunction = (filename: string) => boolean;
+
 interface ManifestPluginOptions {
   hash?: boolean;
   shortNames?: OptionValue;
@@ -49,8 +51,8 @@ interface ManifestPluginOptions {
   extensionless?: OptionValue;
   useEntrypointKeys?: boolean;
   append?: boolean;
-  generate?: (entries: ManifestEntries) => Object;
-  filter?: (filename: string) => boolean;
+  generate?: (entries: ManifestEntries) => object;
+  filter?: FilterFunction;
   relative?: OptionValue;
 }
 
@@ -139,6 +141,7 @@ export = (options: ManifestPluginOptions = {}): Plugin => ({
         try {
           existingManifest = JSON.parse(fs.readFileSync(fullPath, 'utf8'));
         } catch (e) {
+          console.info("No existing manifest file found. A new one will be created.")
         }
       }
 
@@ -259,7 +262,7 @@ const unhashed = (value: string): string => {
 
   // esbuild uses [A-Z0-9]{8} as the hash, and that is not currently configurable, so we will match that exactly
   // along with any preceding character that may be a dot or a dash
-  const unhashedName = parsed.name.replace(new RegExp(`[-\.]?[A-Z0-9]{8}`), '');
+  const unhashedName = parsed.name.replace(new RegExp(`[-.]?[A-Z0-9]{8}`), '');
 
   return path.join(parsed.dir, unhashedName + parsed.ext);
 };
@@ -281,7 +284,7 @@ const fromEntries = (map: Map<string, Mapping>, mergeWith: ManifestEntries): Man
   return {...mergeWith, ...obj};
 };
 
-const filterEntries = (entries: ManifestEntries, filterFunction: any): ManifestEntries => {
+const filterEntries = (entries: ManifestEntries, filterFunction: FilterFunction): ManifestEntries => {
   return Object.keys(entries)
     .filter(filterFunction)
     .reduce((obj: ManifestEntries, key) => {

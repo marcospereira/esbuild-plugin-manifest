@@ -1,4 +1,5 @@
 import manifestPlugin from '../src/index';
+import * as esbuild from 'esbuild';
 import fs from 'fs';
 import path from 'path';
 import {rimraf} from 'rimraf';
@@ -31,44 +32,46 @@ test('it returns a valid esbuild plugin interface', () => {
 });
 
 test('it works with a require call', () => {
+  // disable eslint for this line because we are testing the require call
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
   const manifestPlugin = require('../src/index');
   expect(manifestPlugin()).toHaveProperty('name');
   expect(manifestPlugin()).toHaveProperty('setup');
 });
 
 test('it should include the esbuild metafile during setup', async () => {
-  const result = await require('esbuild').build(buildOptions());
+  const result = await esbuild.build(buildOptions());
 
   expect(result).toHaveProperty('metafile');
 });
 
 test('it should generate the manifest.json in the outdir', async () => {
-  await require('esbuild').build(buildOptions());
+  await esbuild.build(buildOptions());
 
   expect(fs.existsSync(OUTPUT_MANIFEST)).toBe(true);
 });
 
 test('it should generate hashed filenames by default', async () => {
-  await require('esbuild').build(buildOptions({}));
+  await esbuild.build(buildOptions({}));
 
   expect(metafileContents()['test/output/example.js']).toHaveProperty('file', 'test/output/example-4EALSENI.js');
 });
 
 test('it should not have an opinion on hashes when a flag is set', async () => {
-  await require('esbuild').build(buildOptions({hash: false}));
+  await esbuild.build(buildOptions({hash: false}));
 
   expect(metafileContents()['test/output/example.js']).toHaveProperty('file', 'test/output/example.js');
 });
 
 test('it should not override the hashing format if one was supplied already', async () => {
   // our internal hash format uses a '-' instead of a '.'
-  await require('esbuild').build(buildOptions({}, {entryNames: '[dir]/[name].[hash]'}));
+  await esbuild.build(buildOptions({}, {entryNames: '[dir]/[name].[hash]'}));
 
   expect(metafileContents()['test/output/example.js']).toHaveProperty('file', 'test/output/example.LU3IRLCV.js');
 });
 
 test('it should generate long names by default', async () => {
-  await require('esbuild').build(buildOptions({hash: false}));
+  await esbuild.build(buildOptions({hash: false}));
 
   expect(metafileContents()).toEqual({
     "test/output/example.js": {
@@ -81,7 +84,7 @@ test('it should generate long names by default', async () => {
 });
 
 test('it should generate short names if specified', async () => {
-  await require('esbuild').build(buildOptions({hash: false, shortNames: true}));
+  await esbuild.build(buildOptions({hash: false, shortNames: true}));
 
   expect(metafileContents()).toEqual({
     "example.js": {
@@ -94,7 +97,7 @@ test('it should generate short names if specified', async () => {
 });
 
 test('it should allow a short name for the input only', async () => {
-  await require('esbuild').build(buildOptions({hash: false, shortNames: 'input'}));
+  await esbuild.build(buildOptions({hash: false, shortNames: 'input'}));
 
   expect(metafileContents()).toEqual({
     "example.js": {
@@ -107,7 +110,7 @@ test('it should allow a short name for the input only', async () => {
 });
 
 test('it should allow a short name for the output only', async () => {
-  await require('esbuild').build(buildOptions({hash: false, shortNames: 'output'}));
+  await esbuild.build(buildOptions({hash: false, shortNames: 'output'}));
 
   expect(metafileContents()).toEqual({
     "test/output/example.js": {
@@ -123,7 +126,7 @@ test('it should throw an error when there are conflicting short names', async ()
   expect.assertions(2);
 
   try {
-    await require('esbuild').build(buildOptions({shortNames: true}, {entryPoints: ['test/input/pages/home/index.js', 'test/input/pages/about/index.js']}));
+    await esbuild.build(buildOptions({shortNames: true}, {entryPoints: ['test/input/pages/home/index.js', 'test/input/pages/about/index.js']}));
   } catch (e) {
     expect(e.message).toMatch(/conflicting/);
   }
@@ -132,7 +135,7 @@ test('it should throw an error when there are conflicting short names', async ()
 });
 
 test('it should not throw an error if the short name has the same extension but a different basename', async () => {
-  await require('esbuild').build(buildOptions({
+  await esbuild.build(buildOptions({
     hash: false,
     shortNames: true
   }, {entryPoints: ['test/input/pages/home/index.js', 'test/input/example.js']}));
@@ -154,7 +157,7 @@ test('it should not throw an error if the short name has the same extension but 
 });
 
 test('it should not throw an error if the entrypoints have the same name, different extensions, and the useEntrypointKeys option is used', async () => {
-  await require('esbuild').build(buildOptions({
+  await esbuild.build(buildOptions({
     hash: false,
     shortNames: true,
     useEntrypointKeys: true
@@ -180,7 +183,7 @@ test('it should throw an error if there are conflicting outputs when the shortNa
   expect.assertions(2);
 
   try {
-    await require('esbuild').build(buildOptions({
+    await esbuild.build(buildOptions({
       hash: false,
       shortNames: 'output'
     }, {entryPoints: ['test/input/pages/about/index.js', 'test/input/pages/about/index.ts']}));
@@ -196,7 +199,7 @@ test('it should throw an error if the shortname has a different extension but ex
   expect.assertions(2);
 
   try {
-    await require('esbuild').build(buildOptions({
+    await esbuild.build(buildOptions({
       hash: false,
       shortNames: true,
       extensionless: true
@@ -209,14 +212,14 @@ test('it should throw an error if the shortname has a different extension but ex
 });
 
 test('it should generate a different filename if specified', async () => {
-  await require('esbuild').build(buildOptions({filename: 'example.json'}));
+  await esbuild.build(buildOptions({filename: 'example.json'}));
 
   expect(fs.existsSync('test/output/example.json')).toBe(true);
   expect(fs.existsSync(OUTPUT_MANIFEST)).toBe(false);
 });
 
 test('it should use the same directory as the outfile if no outdir was given', async () => {
-  await require('esbuild').build(buildOptions({}, {outdir: undefined, outfile: 'test/output/out.js'}));
+  await esbuild.build(buildOptions({}, {outdir: undefined, outfile: 'test/output/out.js'}));
 
   expect(fs.existsSync(OUTPUT_MANIFEST)).toBe(true);
 });
@@ -225,20 +228,20 @@ test('it should throw an error if building without an outdir or outfile', async 
   expect.assertions(1);
 
   try {
-    await require('esbuild').build(buildOptions({}, {outdir: undefined, outfile: undefined}));
+    await esbuild.build(buildOptions({}, {outdir: undefined, outfile: undefined}));
   } catch (e) {
     expect(e.message).toMatch(/outdir/);
   }
 });
 
 test('it should put the manifest file in the base directory when subdirectories are generated in the outdir', async () => {
-  await require('esbuild').build(buildOptions({}, {entryPoints: ['test/input/pages/home/index.js', 'test/input/pages/about/index.js']}));
+  await esbuild.build(buildOptions({}, {entryPoints: ['test/input/pages/home/index.js', 'test/input/pages/about/index.js']}));
 
   expect(fs.existsSync(OUTPUT_MANIFEST)).toBe(true);
 });
 
 test('it should put the manifest file in the outdir directory when outbase is specified', async () => {
-  await require('esbuild').build(buildOptions({}, {
+  await esbuild.build(buildOptions({}, {
     outbase: 'test',
     entryPoints: ['test/input/pages/home/index.js', 'test/input/pages/about/index.js']
   }));
@@ -247,7 +250,7 @@ test('it should put the manifest file in the outdir directory when outbase is sp
 });
 
 test('it should allow multiple entrypoints with same css', async () => {
-  await require('esbuild').build(buildOptions({hash: false}, {
+  await esbuild.build(buildOptions({hash: false}, {
     entryPoints: ['test/input/example-with-css/example.js', 'test/input/example-with-css/example2.js']
   }));
 
@@ -280,7 +283,7 @@ test('it should allow multiple entrypoints with same css', async () => {
 });
 
 test('it should include an imported css file that is not an explicit entrypoint', async () => {
-  await require('esbuild').build(buildOptions({hash: false}, {entryPoints: ['test/input/example-with-css/example.js']}));
+  await esbuild.build(buildOptions({hash: false}, {entryPoints: ['test/input/example-with-css/example.js']}));
 
   expect(metafileContents()).toEqual({
     "test/output/example.css": {
@@ -299,7 +302,7 @@ test('it should include an imported css file that is not an explicit entrypoint'
 });
 
 test('it should map a sibling css file when no hash is used', async () => {
-  await require('esbuild').build(buildOptions({hash: false}, {entryPoints: ['test/input/example-with-css/example.js']}));
+  await esbuild.build(buildOptions({hash: false}, {entryPoints: ['test/input/example-with-css/example.js']}));
 
   expect(metafileContents()).toEqual({
     "test/output/example.css": {
@@ -318,7 +321,7 @@ test('it should map a sibling css file when no hash is used', async () => {
 })
 
 test('it should map a sibling css file when the standard hash is used', async () => {
-  await require('esbuild').build(buildOptions({}, {entryPoints: ['test/input/example-with-css/example.js']}));
+  await esbuild.build(buildOptions({}, {entryPoints: ['test/input/example-with-css/example.js']}));
 
   const contents = metafileContents();
 
@@ -327,7 +330,7 @@ test('it should map a sibling css file when the standard hash is used', async ()
 })
 
 test('it should map a sibling css file when a different hash is used', async () => {
-  await require('esbuild').build(buildOptions({}, {
+  await esbuild.build(buildOptions({}, {
     entryPoints: ['test/input/example-with-css/example.js'],
     entryNames: '[dir]/[name].[hash]'
   }));
@@ -340,7 +343,7 @@ test('it should map a sibling css file when a different hash is used', async () 
 
 test('it should map a sibling css file when the hash runs up directly against the filename', async () => {
   // notice there is no separation between name and hash
-  await require('esbuild').build(buildOptions({}, {
+  await esbuild.build(buildOptions({}, {
     entryPoints: ['test/input/example-with-css/example.js'],
     entryNames: '[dir]/[name][hash]'
   }));
@@ -352,7 +355,7 @@ test('it should map a sibling css file when the hash runs up directly against th
 });
 
 test('it should map a sibling css file when the hash comes before a suffix', async () => {
-  await require('esbuild').build(buildOptions({}, {
+  await esbuild.build(buildOptions({}, {
     entryPoints: ['test/input/example-with-css/example.js'],
     entryNames: '[dir]/[name]-[hash]-FOO'
   }));
@@ -374,7 +377,7 @@ test('it should map a sibling css file when the hash comes before a suffix', asy
 });
 
 test('it should map a sibling css file when the hash runs up directly against a suffix with capital letters', async () => {
-  await require('esbuild').build(buildOptions({}, {
+  await esbuild.build(buildOptions({}, {
     entryPoints: ['test/input/example-with-css/example.js'],
     entryNames: '[dir]/[name]-[hash]FOO'
   }));
@@ -397,7 +400,7 @@ test('it should map a sibling css file when the hash runs up directly against a 
 
 // TODO handle this edge case
 // test('it should map a sibling css file when the hash runs up directly against a prefix with capital letters', async () => {
-//   await require('esbuild').build(buildOptions({}, {entryPoints: ['test/input/example-with-css/example.js'], entryNames: '[dir]/[name]FOO[hash]'}));
+//   await esbuild.build(buildOptions({}, {entryPoints: ['test/input/example-with-css/example.js'], entryNames: '[dir]/[name]FOO[hash]'}));
 //
 //   const contents = metafileContents();
 //
@@ -409,14 +412,14 @@ test('it should throw an error when a css sibling conflicts with a css entrypoin
   expect.assertions(1);
 
   try {
-    await require('esbuild').build(buildOptions({}, {entryPoints: ['test/input/example-with-css/example.js', 'test/input/example-with-css/example.css']}));
+    await esbuild.build(buildOptions({}, {entryPoints: ['test/input/example-with-css/example.js', 'test/input/example-with-css/example.css']}));
   } catch (e) {
     expect(e.message).toMatch(/conflicting/);
   }
 });
 
 test('it should not attempt to find a sibling for a css entrypoint ', async () => {
-  await require('esbuild').build(buildOptions({}, {entryPoints: ['test/input/example-with-css/global.css']}));
+  await esbuild.build(buildOptions({}, {entryPoints: ['test/input/example-with-css/global.css']}));
 
   const contents = metafileContents();
 
@@ -429,7 +432,7 @@ test('it should not attempt to find a sibling for a css entrypoint ', async () =
 });
 
 test('it should map typescript files', async () => {
-  await require('esbuild').build(buildOptions({hash: false}, {entryPoints: ['test/input/example.ts']}));
+  await esbuild.build(buildOptions({hash: false}, {entryPoints: ['test/input/example.ts']}));
 
   expect(metafileContents()).toEqual({
     "test/output/example.js": {
@@ -442,7 +445,7 @@ test('it should map typescript files', async () => {
 });
 
 test('it should map typescript files that import css', async () => {
-  await require('esbuild').build(buildOptions({hash: false}, {entryPoints: ['test/input/example-with-css/example-typescript.ts']}));
+  await esbuild.build(buildOptions({hash: false}, {entryPoints: ['test/input/example-with-css/example-typescript.ts']}));
 
   expect(metafileContents()).toEqual({
     "test/output/example-typescript.css": {
@@ -461,7 +464,7 @@ test('it should map typescript files that import css', async () => {
 });
 
 test('it should include an imported image file that is not an explicit entrypoint', async () => {
-  await require('esbuild').build(buildOptions({}, {
+  await esbuild.build(buildOptions({}, {
     entryPoints: ['test/input/example-with-image/example.js'],
     loader: {'.png': 'file'}
   }));
@@ -482,7 +485,7 @@ test('it should include an imported image file that is not an explicit entrypoin
 });
 
 test('it should include an imported image file that is not an explicit entrypoint (hash=false)', async () => {
-  await require('esbuild').build(buildOptions({hash: false}, {
+  await esbuild.build(buildOptions({hash: false}, {
     entryPoints: ['test/input/example-with-image/example.js'],
     loader: {'.png': 'file'}
   }));
@@ -504,7 +507,7 @@ test('it should include an imported image file that is not an explicit entrypoin
 });
 
 test('it should include assets placed inside their own directory within the outdir', async () => {
-  await require('esbuild').build(buildOptions({}, {
+  await esbuild.build(buildOptions({}, {
     entryPoints: ['test/input/example-with-image/example.js'],
     loader: {'.png': 'file'},
     assetNames: 'assets/[name]-[hash]'
@@ -529,7 +532,7 @@ test('it should throw an error if the extensionless option is used with bundled 
   expect.assertions(1);
 
   try {
-    await require('esbuild').build(buildOptions({
+    await esbuild.build(buildOptions({
       hash: false,
       extensionless: 'input'
     }, {entryPoints: ['test/input/example-with-css/example.js']}));
@@ -539,7 +542,7 @@ test('it should throw an error if the extensionless option is used with bundled 
 });
 
 test('it should allow an extensionless input', async () => {
-  await require('esbuild').build(buildOptions({hash: false, extensionless: 'input'}));
+  await esbuild.build(buildOptions({hash: false, extensionless: 'input'}));
 
   expect(metafileContents()).toEqual({
     "test/output/example": {
@@ -552,7 +555,7 @@ test('it should allow an extensionless input', async () => {
 });
 
 test('it should allow an extensionless output', async () => {
-  await require('esbuild').build(buildOptions({hash: false, extensionless: 'output'}));
+  await esbuild.build(buildOptions({hash: false, extensionless: 'output'}));
 
   expect(metafileContents()).toEqual({
     "test/output/example.js": {
@@ -565,7 +568,7 @@ test('it should allow an extensionless output', async () => {
 });
 
 test('it should allow an extensionless input and output by specifying true', async () => {
-  await require('esbuild').build(buildOptions({hash: false, extensionless: true}));
+  await esbuild.build(buildOptions({hash: false, extensionless: true}));
 
   expect(metafileContents()).toEqual({
     "test/output/example": {
@@ -578,7 +581,7 @@ test('it should allow an extensionless input and output by specifying true', asy
 });
 
 test('it should allow an extensionless input with shortnames', async () => {
-  await require('esbuild').build(buildOptions({hash: false, shortNames: true, extensionless: 'input'}));
+  await esbuild.build(buildOptions({hash: false, shortNames: true, extensionless: 'input'}));
 
   expect(metafileContents()).toEqual({
     "example": {
@@ -591,7 +594,7 @@ test('it should allow an extensionless input with shortnames', async () => {
 });
 
 test('it should allow an extensionless output with shortnames', async () => {
-  await require('esbuild').build(buildOptions({hash: false, shortNames: true, extensionless: 'output'}));
+  await esbuild.build(buildOptions({hash: false, shortNames: true, extensionless: 'output'}));
 
   expect(metafileContents()).toEqual({
     "example.js": {
@@ -669,7 +672,7 @@ test.each([
     },
   },
 ])('it should allow the extensionless option on a file with multiple extensions', async (options) => {
-  await require('esbuild').build(buildOptions({
+  await esbuild.build(buildOptions({
     hash: false,
     extensionless: options.extensionless
   }, options.buildOptions));
@@ -678,13 +681,13 @@ test.each([
 });
 
 test('it should not throw an error with esbuild write=false option', async () => {
-  await require('esbuild').build(buildOptions({}, {write: false}));
+  await esbuild.build(buildOptions({}, {write: false}));
 
   expect(fs.existsSync(OUTPUT_MANIFEST)).toBe(false);
 })
 
 test('it should include the manifest file as part of the build result output files with the esbuild write=false option', async () => {
-  const result = await require('esbuild').build(buildOptions({hash: false}, {write: false}));
+  const result = await esbuild.build(buildOptions({hash: false}, {write: false}));
 
   const expectedOuput = {
     "test/output/example.js": {
@@ -695,10 +698,10 @@ test('it should include the manifest file as part of the build result output fil
     }
   };
 
-  const resultOutputFiles = result.outputFiles
+  const resultOutputFiles = (result.outputFiles || [])
     // Only the generated JSON files, which will include the manifest
-    .filter((outputFile: { path: any; }) => outputFile.path.endsWith('.json'))
-    .map((outputFile: { path: any; text: string; }) => ({
+    .filter((outputFile: { path: string; }) => outputFile.path.endsWith('.json'))
+    .map((outputFile: { path: string; text: string; }) => ({
       path: outputFile.path,
       contents: JSON.parse(outputFile.text),
     }));
@@ -710,7 +713,7 @@ test('it should include the manifest file as part of the build result output fil
 });
 
 test('it should modify result using generate function', async () => {
-  await require('esbuild').build(buildOptions({
+  await esbuild.build(buildOptions({
     generate: (entries: { [key: string]: string }) => {
       return {files: entries}
     }, hash: false
@@ -730,7 +733,7 @@ test('it should modify result using generate function', async () => {
 
 test('it should only generate the manifest when the build result contains no errors', async () => {
   try {
-    await require('esbuild').build(buildOptions({}, {entryPoints: ['test/input/example-with-error.js']}));
+    await esbuild.build(buildOptions({}, {entryPoints: ['test/input/example-with-error.js']}));
   } catch (e) {
     // We should expect only 1 BuildFailure error from the source file, we don't want our plugin to throw its own error
     expect(e.errors.length).toBe(1);
@@ -744,8 +747,6 @@ test('it should obtain a lock when writing the manifest file so its not corrupte
   const TIMES_TO_RUN = 10;
 
   for (let i = 0; i < TIMES_TO_RUN; i++) {
-    const esbuild = require('esbuild');
-
     await Promise.all([
       esbuild.build(buildOptions({}, {format: 'iife'})),
       esbuild.build(buildOptions({}, {format: 'esm', outExtension: {'.js': '.mjs'}})),
@@ -760,7 +761,7 @@ test('it should obtain a lock when writing the manifest file so its not corrupte
 });
 
 test('it should use the same extension as the output when it is changed via the esbuild outExtension option', async () => {
-  await require('esbuild').build(buildOptions({hash: false}, {outExtension: {'.js': '.mjs'}}));
+  await esbuild.build(buildOptions({hash: false}, {outExtension: {'.js': '.mjs'}}));
 
   expect(metafileContents()).toEqual({
     "test/output/example.mjs": {
@@ -773,7 +774,7 @@ test('it should use the same extension as the output when it is changed via the 
 });
 
 test('it should use the same extension as the entry with useEntrypointKeys option', async () => {
-  await require('esbuild').build(buildOptions({hash: false, useEntrypointKeys: true}, {outExtension: {'.js': '.mjs'}}));
+  await esbuild.build(buildOptions({hash: false, useEntrypointKeys: true}, {outExtension: {'.js': '.mjs'}}));
 
   expect(metafileContents()).toEqual({
     "test/input/example.js": {
@@ -786,7 +787,7 @@ test('it should use the same extension as the entry with useEntrypointKeys optio
 });
 
 test('it should use the same extension as the entry with useEntrypointKeys option (typescript)', async () => {
-  await require('esbuild').build(buildOptions({
+  await esbuild.build(buildOptions({
     hash: false,
     useEntrypointKeys: true
   }, {entryPoints: ['test/input/example.ts']}));
@@ -802,7 +803,7 @@ test('it should use the same extension as the entry with useEntrypointKeys optio
 });
 
 test('it should use the same extension as the entry with useEntrypointKeys option when using outfile instead of outdir', async () => {
-  await require('esbuild').build(buildOptions({hash: false, useEntrypointKeys: true}, {
+  await esbuild.build(buildOptions({hash: false, useEntrypointKeys: true}, {
     outdir: undefined,
     outfile: 'test/output/out.mjs'
   }));
@@ -821,7 +822,7 @@ test.each(['input', true])('it should not throw an error when using the useEntry
   expect.assertions(1);
 
   try {
-    await require('esbuild').build(buildOptions({
+    await esbuild.build(buildOptions({
       hash: false,
       useEntrypointKeys: true,
       extensionless: extensionlessOption
@@ -833,7 +834,7 @@ test.each(['input', true])('it should not throw an error when using the useEntry
 });
 
 test.each(['output', false, undefined])('it should not throw an error when using the useEntrypointKeys option with a compatible extensionless option', async (extensionlessOption) => {
-  await require('esbuild').build(buildOptions({
+  await esbuild.build(buildOptions({
     hash: false,
     useEntrypointKeys: true,
     extensionless: extensionlessOption
@@ -843,7 +844,7 @@ test.each(['output', false, undefined])('it should not throw an error when using
 });
 
 test('it is able to use extensionless=output along with useEntrypointKeys', async () => {
-  await require('esbuild').build(buildOptions({
+  await esbuild.build(buildOptions({
     hash: false,
     useEntrypointKeys: true,
     extensionless: 'output'
@@ -860,8 +861,8 @@ test('it is able to use extensionless=output along with useEntrypointKeys', asyn
 })
 
 test('it should retain a previous key with append=true option', async () => {
-  await require('esbuild').build(buildOptions({hash: false}));
-  await require('esbuild').build(buildOptions({
+  await esbuild.build(buildOptions({hash: false}));
+  await esbuild.build(buildOptions({
     hash: false,
     append: true
   }, {entryPoints: ['test/input/pages/home/index.js']}));
@@ -884,9 +885,9 @@ test('it should retain a previous key with append=true option', async () => {
 
 test('it should overwrite a previous key with append=true option if its been updated', async () => {
   // The first build will generate a manifest with a hash
-  await require('esbuild').build(buildOptions({hash: true}));
+  await esbuild.build(buildOptions({hash: true}));
   // The second build will generate a manifest without a hash
-  await require('esbuild').build(buildOptions({hash: false, append: true}));
+  await esbuild.build(buildOptions({hash: false, append: true}));
 
   expect(metafileContents()).toEqual({
     "test/output/example.js": {
@@ -899,7 +900,7 @@ test('it should overwrite a previous key with append=true option if its been upd
 });
 
 test('it should not throw an error if there is no preexisting file with append=true option', async () => {
-  await require('esbuild').build(buildOptions({hash: false, append: true}));
+  await esbuild.build(buildOptions({hash: false, append: true}));
 
   expect(metafileContents()).toEqual({
     "test/output/example.js": {
@@ -912,8 +913,8 @@ test('it should not throw an error if there is no preexisting file with append=t
 });
 
 test('it supports multiple output formats by using append=true and running esbuild multiple times with a different outExtension', async () => {
-  await require('esbuild').build(buildOptions({hash: false, append: true}, {outExtension: {'.js': '.mjs'}}));
-  await require('esbuild').build(buildOptions({hash: false, append: true}, {outExtension: {'.js': '.cjs'}}));
+  await esbuild.build(buildOptions({hash: false, append: true}, {outExtension: {'.js': '.mjs'}}));
+  await esbuild.build(buildOptions({hash: false, append: true}, {outExtension: {'.js': '.cjs'}}));
 
   expect(metafileContents()).toEqual({
     "test/output/example.cjs": {
@@ -932,7 +933,7 @@ test('it supports multiple output formats by using append=true and running esbui
 });
 
 test('it should keep the file when filter function returns true', async () => {
-  await require('esbuild').build(buildOptions({filter: (filename: string) => filename.match(/example/), hash: false}));
+  await esbuild.build(buildOptions({filter: (filename: string) => filename.match(/example/), hash: false}));
 
   expect(metafileContents()).toEqual({
     "test/output/example.js": {
@@ -945,7 +946,7 @@ test('it should keep the file when filter function returns true', async () => {
 });
 
 test('it should remove the outdir folder prefix when configured to have relative paths (both)', async () => {
-  await require('esbuild').build(buildOptions({relative: true}));
+  await esbuild.build(buildOptions({relative: true}));
 
   expect(metafileContents()).toEqual({
     "/example.js": {
@@ -958,7 +959,7 @@ test('it should remove the outdir folder prefix when configured to have relative
 });
 
 test('it should remove the outdir folder prefix when configured to have relative paths (input)', async () => {
-  await require('esbuild').build(buildOptions({relative: 'input'}));
+  await esbuild.build(buildOptions({relative: 'input'}));
 
   expect(metafileContents()).toEqual({
     "/example.js": {
@@ -971,7 +972,7 @@ test('it should remove the outdir folder prefix when configured to have relative
 });
 
 test('it should remove the outdir folder prefix when configured to have relative paths (output)', async () => {
-  await require('esbuild').build(buildOptions({relative: 'output'}));
+  await esbuild.build(buildOptions({relative: 'output'}));
 
   expect(metafileContents()).toEqual({
     "test/output/example.js": {
@@ -984,13 +985,13 @@ test('it should remove the outdir folder prefix when configured to have relative
 });
 
 test('it should remove the file when filter function returns false', async () => {
-  await require('esbuild').build(buildOptions({filter: (filename: string) => filename.match(/notFound/), hash: false}));
+  await esbuild.build(buildOptions({filter: (filename: string) => filename.match(/notFound/), hash: false}));
 
   expect(metafileContents()).toEqual({});
 });
 
 test('it should use the hashed filename of chunks as keys when splitting is enabled', async () => {
-  await require('esbuild').build(buildOptions({}, {
+  await esbuild.build(buildOptions({}, {
     entryPoints: ['test/input/splitting/index.js', 'test/input/splitting/home.js', 'test/input/splitting/about.js'],
     splitting: true,
     format: 'esm',
