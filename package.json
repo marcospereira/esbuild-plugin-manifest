@@ -47,7 +47,8 @@
     "test:coverage": "jest --coverage",
     "prepack": "yarn run build",
     "lint": "eslint src test/*.ts",
-    "format": "prettier --ignore-path .gitignore --write \"**/*.+(ts|json)\""
+    "format": "prettier --ignore-path .gitignore --write \"**/*.+(ts|json)\"",
+    "format:check": "prettier --ignore-path .gitignore --check \"**/*.+(ts|json)\""
   },
   "files": [
     "lib/**/*"
