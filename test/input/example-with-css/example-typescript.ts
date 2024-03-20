@@ -1,3 +1,3 @@
-import './example.css';
+import "./example.css";
 
-console.log('example typescript');
+console.log("example typescript");
