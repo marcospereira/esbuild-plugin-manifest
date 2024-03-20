@@ -1,17 +1,12 @@
-import {
-  BuildOptions,
-  BuildResult,
-  Plugin,
-  PluginBuild
-} from 'esbuild';
-import fs from 'fs';
-import path from 'path';
-import util from 'util';
-import lockfile from 'proper-lockfile';
+import { BuildOptions, BuildResult, Plugin, PluginBuild } from "esbuild";
+import fs from "fs";
+import path from "path";
+import util from "util";
+import lockfile from "proper-lockfile";
 
-import {createHash} from 'crypto';
+import { createHash } from "crypto";
 
-type OptionValue = boolean | 'input' | 'output';
+type OptionValue = boolean | "input" | "output";
 
 class Mapping {
   input: string;
@@ -39,7 +34,7 @@ interface ManifestEntry {
 }
 
 interface ManifestEntries {
-  [key: string]: ManifestEntry
+  [key: string]: ManifestEntry;
 }
 
 type FilterFunction = (filename: string) => boolean;
@@ -57,13 +52,13 @@ interface ManifestPluginOptions {
 }
 
 export = (options: ManifestPluginOptions = {}): Plugin => ({
-  name: 'manifest',
+  name: "manifest",
   setup(build: PluginBuild) {
     build.initialOptions.metafile = true;
 
     // assume that the user wants to hash their files by default,
     // but don't override any hashing format they may have already set.
-    const defaultHashNames = options.hash === false ? '[dir]/[name]' : '[dir]/[name]-[hash]';
+    const defaultHashNames = options.hash === false ? "[dir]/[name]" : "[dir]/[name]-[hash]";
     build.initialOptions.entryNames = build.initialOptions.entryNames || defaultHashNames;
     build.initialOptions.assetNames = build.initialOptions.assetNames || defaultHashNames;
 
@@ -82,16 +77,16 @@ export = (options: ManifestPluginOptions = {}): Plugin => ({
 
       const addMapping = (inputFilename: string, outputFilename: string) => {
         // check if the shortNames option is being used on the input or output
-        let input = shouldModify('input', options.shortNames) ? shortName(inputFilename) : inputFilename;
-        let output = shouldModify('output', options.shortNames) ? shortName(outputFilename) : outputFilename;
+        let input = shouldModify("input", options.shortNames) ? shortName(inputFilename) : inputFilename;
+        let output = shouldModify("output", options.shortNames) ? shortName(outputFilename) : outputFilename;
 
         // check if the extensionless option is being used on the input or output
-        input = shouldModify('input', options.extensionless) ? extensionless(input) : input;
-        output = shouldModify('output', options.extensionless) ? extensionless(output) : output;
+        input = shouldModify("input", options.extensionless) ? extensionless(input) : input;
+        output = shouldModify("output", options.extensionless) ? extensionless(output) : output;
 
         // check if the relative option is being used
-        input = shouldModify('input', options.relative) ? relativeName(input, build.initialOptions.outdir) : input;
-        output = shouldModify('output', options.relative) ? relativeName(output, build.initialOptions.outdir) : output;
+        input = shouldModify("input", options.relative) ? relativeName(input, build.initialOptions.outdir) : input;
+        output = shouldModify("output", options.relative) ? relativeName(output, build.initialOptions.outdir) : output;
 
         // When shortNames are enabled, there can be conflicting filenames.
         // For example, if the entry points are ['src/pages/home/index.js', 'src/pages/about/index.js'] both of the
@@ -100,11 +95,13 @@ export = (options: ManifestPluginOptions = {}): Plugin => ({
         // There are other scenarios that can cause a conflicting filename, so we'll just ensure that the key
         // we're trying to add doesn't already exist.
         if (mappings.has(input)) {
-          throw new Error(`There is a conflicting manifest key for '${input}'. First conflicting output: '${mappings.get(input)}'. Second conflicting output: '${output}'.`);
+          throw new Error(
+            `There is a conflicting manifest key for '${input}'. First conflicting output: '${mappings.get(input)}'. Second conflicting output: '${output}'.`,
+          );
         }
 
         mappings.set(input, new Mapping(input, output, inputFilename, outputFilename));
-      }
+      };
 
       for (const outputFilename in result.metafile.outputs) {
         // Strip the hash from the output filename.
@@ -113,7 +110,7 @@ export = (options: ManifestPluginOptions = {}): Plugin => ({
         // When code splitting is used, every chunk will be named "chunk.HASH.js". That means when there are multiple chunks,
         // every unhashed filename would be "chunk.js", which would cause a conflict in the manifest. So, for chunks, we'll just
         // use the output filename including the hash as the key.
-        if (path.parse(key).name === 'chunk') {
+        if (path.parse(key).name === "chunk") {
           key = outputFilename;
         }
 
@@ -123,8 +120,10 @@ export = (options: ManifestPluginOptions = {}): Plugin => ({
         // If the user specified the useEntryExtension option, we'll use the entrypoint filename as the key.
         if (options.useEntrypointKeys && isEntryFile) {
           // Cannot use the useEntrypointKeys option when the extensionless option is also being used
-          if (options.extensionless === true || options.extensionless === 'input') {
-            throw new Error("The useEntrypointKeys option cannot be used when the extensionless option is also being used.");
+          if (options.extensionless === true || options.extensionless === "input") {
+            throw new Error(
+              "The useEntrypointKeys option cannot be used when the extensionless option is also being used.",
+            );
           }
 
           key = result.metafile.outputs[outputFilename]!.entryPoint!;
@@ -139,9 +138,9 @@ export = (options: ManifestPluginOptions = {}): Plugin => ({
       let existingManifest: { [key: string]: ManifestEntry } = {};
       if (options.append) {
         try {
-          existingManifest = JSON.parse(fs.readFileSync(fullPath, 'utf8'));
+          existingManifest = JSON.parse(fs.readFileSync(fullPath, "utf8"));
         } catch (e) {
-          console.info("No existing manifest file found. A new one will be created.")
+          console.info("No existing manifest file found. A new one will be created.");
         }
       }
 
@@ -169,7 +168,7 @@ export = (options: ManifestPluginOptions = {}): Plugin => ({
 
       return writeFileWithLock(fullPath, text);
     });
-  }
+  },
 });
 
 const pathToManifest = (initialOptions: BuildOptions, pluginOptions: ManifestPluginOptions): string => {
@@ -184,7 +183,7 @@ const pathToManifest = (initialOptions: BuildOptions, pluginOptions: ManifestPlu
     outdir = path.resolve(initialOptions.absWorkingDir, outdir);
   }
 
-  const filename = pluginOptions.filename || 'manifest.json';
+  const filename = pluginOptions.filename || "manifest.json";
 
   return path.resolve(outdir, filename);
 };
@@ -197,7 +196,7 @@ const writeFileWithLock = async (fullPath: string, text: string): Promise<void> 
       retries: 5,
       minTimeout: 10,
       maxTimeout: 100,
-    }
+    },
   };
 
   try {
@@ -216,19 +215,19 @@ const writeFileWithLock = async (fullPath: string, text: string): Promise<void> 
 // the lockfile library will throw an error if the file does not exist already.
 const ensureFile = async (fullPath: string): Promise<void> => {
   try {
-    await fs.promises.access(fullPath)
+    await fs.promises.access(fullPath);
   } catch (err) {
     // If the error is not that the file does not exist, rethrow it
-    if (err.code !== 'ENOENT') {
+    if (err.code !== "ENOENT") {
       throw err;
     }
 
     // We got an ENOENT error, so create the file
-    await fs.promises.writeFile(fullPath, '');
+    await fs.promises.writeFile(fullPath, "");
   }
 };
 
-const shouldModify = (inputOrOutput: 'input' | 'output', optionValue?: OptionValue): boolean => {
+const shouldModify = (inputOrOutput: "input" | "output", optionValue?: OptionValue): boolean => {
   return optionValue === inputOrOutput || optionValue === true;
 };
 
@@ -237,21 +236,21 @@ const shortName = (value: string): string => {
 };
 
 const relativeName = (filename: string, outputFolder: string | undefined): string => {
-  return filename.replace(outputFolder || '', '');
+  return filename.replace(outputFolder || "", "");
 };
 
 const extensionless = (value: string): string => {
   const parsed = path.parse(value);
 
-  const dir = parsed.dir !== '' ? `${parsed.dir}/` : '';
+  const dir = parsed.dir !== "" ? `${parsed.dir}/` : "";
 
   // Consider the "extensionless" name of the file to be the name up until the first dot. That way a file like
   // "example.min.js" will be considered "example" and not "example.min" (which parsed.name would consider the result to be).
-  let extensionlessName = parsed.base.split('.')[0];
+  let extensionlessName = parsed.base.split(".")[0];
 
   // Retain the .map extension on source map files, otherwise there will be a conflict with the actual source file.
-  if (parsed.ext === '.map') {
-    extensionlessName += '.map';
+  if (parsed.ext === ".map") {
+    extensionlessName += ".map";
   }
 
   return `${dir}${extensionlessName}`;
@@ -262,18 +261,18 @@ const unhashed = (value: string): string => {
 
   // esbuild uses [A-Z0-9]{8} as the hash, and that is not currently configurable, so we will match that exactly
   // along with any preceding character that may be a dot or a dash
-  const unhashedName = parsed.name.replace(new RegExp(`[-.]?[A-Z0-9]{8}`), '');
+  const unhashedName = parsed.name.replace(new RegExp(`[-.]?[A-Z0-9]{8}`), "");
 
   return path.join(parsed.dir, unhashedName + parsed.ext);
 };
 
 const integrity = (fileContent: Buffer | string): string => {
-  return createHash("sha384").update(fileContent).digest("base64")
-}
+  return createHash("sha384").update(fileContent).digest("base64");
+};
 
 const etag = (fileContent: Buffer | string): string => {
   return createHash("md5").update(fileContent).digest("hex");
-}
+};
 
 const fromEntries = (map: Map<string, Mapping>, mergeWith: ManifestEntries): ManifestEntries => {
   const obj = Array.from(map).reduce((obj: ManifestEntries, [key, value]) => {
@@ -281,7 +280,7 @@ const fromEntries = (map: Map<string, Mapping>, mergeWith: ManifestEntries): Man
     return obj;
   }, {});
 
-  return {...mergeWith, ...obj};
+  return { ...mergeWith, ...obj };
 };
 
 const filterEntries = (entries: ManifestEntries, filterFunction: FilterFunction): ManifestEntries => {
@@ -305,4 +304,4 @@ const toManifestEntry = (mapping: Mapping): ManifestEntry => {
     integrity: integrity(fileContent),
     etag: etag(fileContent),
   };
-}
+};

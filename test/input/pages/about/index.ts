@@ -1,1 +1,1 @@
-console.log('about page typescript');
+console.log("about page typescript");
