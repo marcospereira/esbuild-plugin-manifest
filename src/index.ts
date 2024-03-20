@@ -157,9 +157,8 @@ export = (options: ManifestPluginOptions = {}): Plugin => ({
         result.outputFiles?.push({
           path: fullPath,
           contents: new util.TextEncoder().encode(text),
-          get text() {
-            return text;
-          }
+          text: text,
+          hash: integrity(text),
         });
 
         return;
